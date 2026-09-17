@@ -1,1 +1,1 @@
-This is my person webpage
+This is my personal webpage
