@@ -98,11 +98,19 @@ def get(path, auth=False):
 
 
 def load(path, default):
-    return json.loads(path.read_text()) if path.exists() else default
+    # encoding is explicit because Windows defaults to cp1252, which cannot
+    # read back the non-Latin characters that turn up in forum post titles.
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        print(f"  warning: {path.name} is corrupt or truncated — starting it over")
+        return default
 
 
 def save(path, data):
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 # ---------------------------------------------------------------- stage 1
