@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% seo %}
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    {% include head-custom.html %}
+    <style>
+      .site-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+        gap: .25rem 1.5rem; margin-bottom: 1.5rem; padding-bottom: .4rem; border-bottom: 1px solid #eaecef; }
+      .site-header .site-title { margin: 0; padding: 0; border: 0; font-size: 2em; }
+      .site-header .site-title a { color: #24292e; text-decoration: none; }
+      .site-nav a { display: inline-block; margin-right: 1.25rem; padding: .2rem 0; color: #586069;
+        font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; }
+      .site-nav a:last-child { margin-right: 0; }
+      .site-nav a:hover { color: #0366d6; }
+      .site-nav a.active { color: #24292e; border-bottom-color: #0366d6; }
+    </style>
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      <header class="site-header">
+        <h1 class="site-title"><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
+        <nav class="site-nav">
+          <a href="{{ "/" | relative_url }}"{% if page.url == "/" or page.name == "README.md" %} class="active"{% endif %}>Home</a>
+          <a href="{{ "/cv/" | relative_url }}"{% if page.url == "/cv/" %} class="active"{% endif %}>CV</a>
+          <a href="{{ "/ipums-forum/" | relative_url }}">IPUMS Forum</a>
+        </nav>
+      </header>
+
+      {{ content }}
+
+      {% if site.github.private != true and site.github.license %}
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. {% github_edit_link "Improve this page" %}.
+      </div>
+      {% endif %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
