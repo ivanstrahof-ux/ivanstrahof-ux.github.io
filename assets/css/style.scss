@@ -9,6 +9,13 @@
   padding: 48px 24px !important;
 }
 
+@media (max-width: 600px) {
+  .markdown-body img[src*="headshot"] {
+    width: 40%;
+    height: auto;
+  }
+}
+
 body {
   background-color: #efe6d6;  /* sand */
 }
