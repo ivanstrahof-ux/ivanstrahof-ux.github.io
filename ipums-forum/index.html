@@ -2800,7 +2800,7 @@ Filter: migrate1d(24,31,32,40), migplac1(06), migpuma1(7500)</li>
 <article><h3><a href='https://forum.ipums.org/t/in-bpld-what-do-ns-and-nec-mean/4234/2'>In BPLD, what do &quot;ns&quot; and &quot;nec&quot; mean?</a></h3><div class='meta'>2021-07-15 &middot; General</div><div class='body'><p>n.s. stands for “not specified” and refers to cases where more precise information about the place of birth is not available. In your first example, “Americas, ns”, refers to instances when the place of birth was indicated as being in “America” or the “Americas” without any further specification. n.e.c. stands for “not elsewhere classified” and includes all responses for which there is no specific code for the given geography.</p>
 <p>Hope that helps!</p></div></article>
 
-  <style>
+<style>
   .collection-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
   .collection-filter button {
     font: inherit; font-size: 14px; line-height: 1.4; padding: 4px 12px; cursor: pointer;
@@ -2814,42 +2814,34 @@ Filter: migrate1d(24,31,32,40), migplac1(06), migpuma1(7500)</li>
 </style>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  var nodes = document.querySelectorAll("h2, div.meta");
-  if (!document.querySelector("div.meta")) return;
-
-  function collectionOf(meta) {
-    var parts = meta.textContent.split("\u00b7");
-    return parts.length > 1 ? parts[1].trim() : "Other";
+  // Each reply is an <article> whose own (direct-child) .meta line reads
+  // "date · Collection[ · marked as solution]". Images inside a reply's body
+  // also contain a .meta div, so only the direct child is used.
+  function metaOf(article) {
+    for (var i = 0; i < article.children.length; i++) {
+      if (article.children[i].classList.contains("meta")) return article.children[i];
+    }
+    return null;
   }
-
-  function postElements(meta) {
-    var parent = meta.parentElement;
-    if (parent && parent !== document.body && parent.querySelectorAll("div.meta").length === 1) {
-      return [parent];
+  function collectionOf(meta) {
+    if (!meta) return "Other";
+    var parts = meta.textContent.split("·").map(function (s) { return s.trim(); });
+    for (var i = 1; i < parts.length; i++) {
+      if (parts[i] && parts[i] !== "marked as solution") return parts[i];
     }
-    var start = meta;
-    var prev = meta.previousElementSibling;
-    while (prev && !/^H[1-3]$/.test(prev.tagName)) prev = prev.previousElementSibling;
-    if (prev && prev.tagName === "H3") start = prev;
-    var els = [];
-    var el = start;
-    while (el) {
-      els.push(el);
-      el = el.nextElementSibling;
-      if (!el || /^(H1|H2|H3|SCRIPT|STYLE|FOOTER)$/.test(el.tagName) || el.querySelector("div.meta")) break;
-    }
-    return els;
+    return "Other";
   }
 
   var posts = [], headings = [], currentHeading = null;
-  Array.prototype.forEach.call(nodes, function (node) {
+  Array.prototype.forEach.call(document.querySelectorAll("h2, article"), function (node) {
     if (node.tagName === "H2") {
-      currentHeading = { el: node, label: node.textContent.split("\u00b7")[0].trim() };
+      currentHeading = { el: node, label: node.textContent.split("·")[0].trim() };
       headings.push(currentHeading);
-    } else {
-      posts.push({ collection: collectionOf(node), els: postElements(node), heading: currentHeading });
+    } else if (!node.parentElement.closest("article")) {
+      posts.push({ el: node, collection: collectionOf(metaOf(node)), heading: currentHeading });
     }
   });
+  if (!posts.length) return;
 
   var counts = {};
   posts.forEach(function (p) { counts[p.collection] = (counts[p.collection] || 0) + 1; });
@@ -2863,7 +2855,6 @@ document.addEventListener("DOMContentLoaded", function () {
   ["All"].concat(names).forEach(function (name) {
     var b = document.createElement("button");
     b.type = "button";
-    b.innerHTML = "";
     b.appendChild(document.createTextNode(name));
     var n = document.createElement("span");
     n.className = "n";
@@ -2874,19 +2865,19 @@ document.addEventListener("DOMContentLoaded", function () {
     buttons[name] = b;
   });
 
-  var anchor = headings.length ? headings[0].el : posts[0].els[0];
+  var anchor = headings.length ? headings[0].el : posts[0].el;
   anchor.parentNode.insertBefore(bar, anchor);
 
   function apply(name, updateUrl) {
     headings.forEach(function (h) { h.shown = 0; });
     posts.forEach(function (p) {
       var show = name === "All" || p.collection === name;
-      p.els.forEach(function (el) { el.classList.toggle("is-hidden", !show); });
+      p.el.classList.toggle("is-hidden", !show);
       if (show && p.heading) p.heading.shown++;
     });
     headings.forEach(function (h) {
       h.el.classList.toggle("is-hidden", h.shown === 0);
-      h.el.textContent = h.label + " \u00b7 " + h.shown + (h.shown === 1 ? " reply" : " replies");
+      h.el.textContent = h.label + " · " + h.shown + (h.shown === 1 ? " reply" : " replies");
     });
     Object.keys(buttons).forEach(function (k) {
       buttons[k].classList.toggle("active", k === name);
