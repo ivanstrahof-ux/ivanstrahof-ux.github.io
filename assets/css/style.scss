@@ -1,0 +1,10 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* Narrower content column = wider side margins */
+.container-lg {
+  max-width: 760px;
+  padding: 48px 24px !important;
+}
