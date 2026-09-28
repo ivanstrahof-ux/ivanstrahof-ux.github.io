@@ -1,0 +1,41 @@
+<div class="pdf-viewer" data-src="{{ include.file | relative_url }}">
+  <p class="pdf-loading">Loading PDF…</p>
+</div>
+<script>
+(function () {
+  if (window.__pdfViewerInit) { return; }
+  window.__pdfViewerInit = true;
+  var PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+  function renderAll() {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js";
+    document.querySelectorAll(".pdf-viewer").forEach(function (box) {
+      var src = box.getAttribute("data-src");
+      pdfjsLib.getDocument(src).promise.then(async function (pdf) {
+        box.innerHTML = "";
+        for (var i = 1; i <= pdf.numPages; i++) {
+          var page = await pdf.getPage(i);
+          var viewport = page.getViewport({ scale: 2 });
+          var canvas = document.createElement("canvas");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          box.appendChild(canvas);
+          await page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+        }
+      }).catch(function () {
+        box.innerHTML = '<p>The PDF couldn\'t be displayed. <a href="' + src + '">Open it here</a>.</p>';
+      });
+    });
+  }
+  function load() {
+    var s = document.createElement("script");
+    s.src = PDFJS + "pdf.min.js";
+    s.onload = renderAll;
+    document.head.appendChild(s);
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", load);
+  } else {
+    load();
+  }
+})();
+</script>
