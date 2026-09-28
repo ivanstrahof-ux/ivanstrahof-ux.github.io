@@ -2776,5 +2776,108 @@ Filter: migrate1d(24,31,32,40), migplac1(06), migpuma1(7500)</li>
 <p>Hope that’s helpful!</p></div></article>
 <article><h3><a href='https://forum.ipums.org/t/in-bpld-what-do-ns-and-nec-mean/4234/2'>In BPLD, what do &quot;ns&quot; and &quot;nec&quot; mean?</a></h3><div class='meta'>2021-07-15 &middot; General</div><div class='body'><p>n.s. stands for “not specified” and refers to cases where more precise information about the place of birth is not available. In your first example, “Americas, ns”, refers to instances when the place of birth was indicated as being in “America” or the “Americas” without any further specification. n.e.c. stands for “not elsewhere classified” and includes all responses for which there is no specific code for the given geography.</p>
 <p>Hope that helps!</p></div></article>
+
+  <style>
+  .collection-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+  .collection-filter button {
+    font: inherit; font-size: 14px; line-height: 1.4; padding: 4px 12px; cursor: pointer;
+    border: 1px solid #c9b99a; border-radius: 16px; background: #f7f1e6; color: #24292e;
+  }
+  .collection-filter button:hover { border-color: #0366d6; }
+  .collection-filter button.active { background: #0366d6; border-color: #0366d6; color: #fff; }
+  .collection-filter .n { margin-left: 4px; color: #6a5d45; }
+  .collection-filter button.active .n { color: #dbe9fb; }
+  .is-hidden { display: none !important; }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var nodes = document.querySelectorAll("h2, div.meta");
+  if (!document.querySelector("div.meta")) return;
+
+  function collectionOf(meta) {
+    var parts = meta.textContent.split("\u00b7");
+    return parts.length > 1 ? parts[1].trim() : "Other";
+  }
+
+  function postElements(meta) {
+    var parent = meta.parentElement;
+    if (parent && parent !== document.body && parent.querySelectorAll("div.meta").length === 1) {
+      return [parent];
+    }
+    var start = meta;
+    var prev = meta.previousElementSibling;
+    while (prev && !/^H[1-3]$/.test(prev.tagName)) prev = prev.previousElementSibling;
+    if (prev && prev.tagName === "H3") start = prev;
+    var els = [];
+    var el = start;
+    while (el) {
+      els.push(el);
+      el = el.nextElementSibling;
+      if (!el || /^(H1|H2|H3|SCRIPT|STYLE|FOOTER)$/.test(el.tagName) || el.querySelector("div.meta")) break;
+    }
+    return els;
+  }
+
+  var posts = [], headings = [], currentHeading = null;
+  Array.prototype.forEach.call(nodes, function (node) {
+    if (node.tagName === "H2") {
+      currentHeading = { el: node, label: node.textContent.split("\u00b7")[0].trim() };
+      headings.push(currentHeading);
+    } else {
+      posts.push({ collection: collectionOf(node), els: postElements(node), heading: currentHeading });
+    }
+  });
+
+  var counts = {};
+  posts.forEach(function (p) { counts[p.collection] = (counts[p.collection] || 0) + 1; });
+  var names = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
+
+  var bar = document.createElement("div");
+  bar.className = "collection-filter";
+  bar.setAttribute("role", "group");
+  bar.setAttribute("aria-label", "Filter replies by collection");
+  var buttons = {};
+  ["All"].concat(names).forEach(function (name) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = "";
+    b.appendChild(document.createTextNode(name));
+    var n = document.createElement("span");
+    n.className = "n";
+    n.textContent = name === "All" ? posts.length : counts[name];
+    b.appendChild(n);
+    b.addEventListener("click", function () { apply(name, true); });
+    bar.appendChild(b);
+    buttons[name] = b;
+  });
+
+  var anchor = headings.length ? headings[0].el : posts[0].els[0];
+  anchor.parentNode.insertBefore(bar, anchor);
+
+  function apply(name, updateUrl) {
+    headings.forEach(function (h) { h.shown = 0; });
+    posts.forEach(function (p) {
+      var show = name === "All" || p.collection === name;
+      p.els.forEach(function (el) { el.classList.toggle("is-hidden", !show); });
+      if (show && p.heading) p.heading.shown++;
+    });
+    headings.forEach(function (h) {
+      h.el.classList.toggle("is-hidden", h.shown === 0);
+      h.el.textContent = h.label + " \u00b7 " + h.shown + (h.shown === 1 ? " reply" : " replies");
+    });
+    Object.keys(buttons).forEach(function (k) {
+      buttons[k].classList.toggle("active", k === name);
+      buttons[k].setAttribute("aria-pressed", k === name ? "true" : "false");
+    });
+    if (updateUrl && window.history && history.replaceState) {
+      history.replaceState(null, "", name === "All" ? location.pathname : "#" + encodeURIComponent(name));
+    }
+  }
+
+  var fromUrl = decodeURIComponent(location.hash.slice(1));
+  apply(counts[fromUrl] ? fromUrl : "All", false);
+});
+</script>
+  
 </body></html>
 
