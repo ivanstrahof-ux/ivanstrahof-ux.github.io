@@ -1,6 +1,6 @@
 ---
 title: Job Market Paper
-permalink: /jmp/
+permalink: research/jmp/
 ---
 
 # Job Market Paper
