@@ -5,8 +5,6 @@ permalink: /Research/
 
 # Research
 
-[Download PDF](/Ivan_Strahof_CV.pdf) · Updated September 2026
+**Working Papers**
 
-<object data="/Ivan_Strahof_CV.pdf" type="application/pdf" width="100%" height="1000px">
-  <p>Your browser can't display the PDF here. <a href="/Ivan_Strahof_CV.pdf">Download the CV</a> instead.</p>
-</object>
+1. ["Why Don't You Just Meet Me in the Middle: Intrahousehold Bargaining and Divorce Reform in Mexico."](jmp)
