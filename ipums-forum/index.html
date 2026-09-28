@@ -1,35 +1,10 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>IPUMS Forum Replies</title>
-<style>
-:root { --fg:#1a1a1a; --muted:#666; --rule:#e2e2e2; --accent:#00263a; --bg:#fff; }
-@media (prefers-color-scheme: dark) {
-  :root { --fg:#e8e8e8; --muted:#999; --rule:#333; --accent:#7fb2cc; --bg:#161616; }
-}
-* { box-sizing: border-box; }
-body { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1rem 5rem;
-  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, serif;
-  color: var(--fg); background: var(--bg); }
-h1 { font-size: 1.7rem; margin-bottom: .25rem; }
-.sub { color: var(--muted); margin-bottom: 2.5rem; }
-h2 { font-size: 1.1rem; margin: 2.5rem 0 1rem; padding-bottom: .3rem;
-  border-bottom: 2px solid var(--rule); letter-spacing: .04em; text-transform: uppercase; }
-article { padding: 1.25rem 0; border-bottom: 1px solid var(--rule); }
-article h3 { font-size: 1.05rem; margin: 0 0 .3rem; }
-article h3 a { color: var(--accent); text-decoration: none; }
-article h3 a:hover { text-decoration: underline; }
-.meta { font-size: .82rem; color: var(--muted); margin-bottom: .75rem; }
-.solved { color: #2e7d32; font-weight: 600; }
-@media (prefers-color-scheme: dark) { .solved { color: #7fd18a; } }
-.body { font-size: .95rem; }
-.body p:first-child { margin-top: 0; }
-.body pre { background: rgba(127,127,127,.12); padding: .75rem; overflow-x: auto;
-  font-size: .85rem; border-radius: 4px; }
-.body code { font-size: .88em; }
-.body img, .body table { max-width: 100%; }
-.body aside.quote, .body blockquote { border-left: 3px solid var(--rule);
-  margin-left: 0; padding-left: 1rem; color: var(--muted); }
-</style></head><body>
+   ---
+   layout: default
+   title: IPUMS Forum
+   ---
+   {% raw %}
+
+<body>
 <h1>IPUMS Forum Replies</h1>
 <p class='sub'>778 replies on <a href='https://forum.ipums.org'>forum.ipums.org</a>.</p>
 <h2>2026 &middot; 66 replies</h2>
@@ -2775,3 +2750,4 @@ Filter: migrate1d(24,31,32,40), migplac1(06), migpuma1(7500)</li>
 <article><h3><a href='https://forum.ipums.org/t/in-bpld-what-do-ns-and-nec-mean/4234/2'>In BPLD, what do &quot;ns&quot; and &quot;nec&quot; mean?</a></h3><div class='meta'>2021-07-15 &middot; General</div><div class='body'><p>n.s. stands for “not specified” and refers to cases where more precise information about the place of birth is not available. In your first example, “Americas, ns”, refers to instances when the place of birth was indicated as being in “America” or the “Americas” without any further specification. n.e.c. stands for “not elsewhere classified” and includes all responses for which there is no specific code for the given geography.</p>
 <p>Hope that helps!</p></div></article>
 </body></html>
+{% endraw %}
