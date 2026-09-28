@@ -16,6 +16,14 @@
   }
 }
 
+.pdf-viewer canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 16px;
+  border: 1px solid #d8ccb4;
+}
+
 body {
   background-color: #efe6d6;  /* sand */
 }
