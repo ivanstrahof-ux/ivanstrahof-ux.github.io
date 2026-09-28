@@ -1,6 +1,6 @@
 ---
 title: Remote Work and Fertility
-permalink: /remotework/
+permalink: research/remotework/
 ---
 
 # Remote Work and Fertility
